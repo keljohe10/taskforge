@@ -1,7 +1,5 @@
 # Producto
 
-> Este archivo describe **qué** es TaskForge y **para quién**. El agente de IA lo lee en cada conversación para entender el contexto del proyecto.
-
 ## Qué es
 TaskForge es una aplicación web para gestionar proyectos y tareas en equipo, con un asistente de IA que sugiere subtareas automáticamente.
 

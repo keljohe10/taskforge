@@ -1,47 +1,40 @@
-# Estructura del Proyecto
+# Stack Tecnológico
 
-> Este archivo le dice al agente **cómo** organizamos el código de TaskForge. Completa los `[...]` durante la clase.
+> Este archivo le dice al agente **con qué** vamos a construir TaskForge.
 
-## Organización de carpetas
+## Monorepo
+- Package manager: pnpm con workspaces
+- Estructura: `apps/` para apps desplegables, `packages/` para librerías compartidas internas.
 
-```
-taskforge/
-├── apps/
-│   ├── web/        # frontend
-│   └── api/        # backend
-├── packages/
-│   └── shared/     # tipos y utilidades compartidas
-├── docker-compose.yml
-└── package.json
-```
+## Frontend (apps/web)
+- Framework: React 18+ con hooks y componentes funcionales
+- Bundler: Vite
+- Librería de UI: MUI v5+
+- Lenguaje: TypeScript en modo strict
 
-**Regla de oro**: frontend y backend nunca se importan entre sí. Si necesitan compartir algo, va en `packages/shared/`.
+## Backend (apps/api)
+- Runtime: Node.js 20+
+- Framework: Express 4+
+- Hot reload en dev: tsx watch
+- Validación de entradas: Zod
+- Autenticación: JWT en header Authorization (Bearer)
 
-## Convenciones de la API
-- Todos los endpoints van bajo `[...]` (prefijo de versión)
-- Validación de entradas en el servidor: `[...]`
-- Token de autenticación en el header: `[...]`
-- Forma de los errores: `[...]`
+## Bases de datos
+Usamos dos bases de datos a propósito, una relacional y una documental:
 
-## Estilo de código
-- Indentación: `[...]`
-- Comillas: `[...]`
-- Punto y coma: `[...]`
-- Coma final (trailing comma): `[...]`
-- Ancho de línea: `[...]`
+- Relacional: PostgreSQL con ORM Prisma (usuarios, proyectos, tareas, subtareas)
+- Documental: MongoDB con ODM Mongoose (comentarios, historial de actividad)
 
-## Linting
-- Base de ESLint: `[...]`
-- Plugins adicionales: `[...]`
+## Integración con IA
+- Proveedor: Anthropic Claude API
+- Caso de uso: endpoint `POST /api/v1/ai/suggest-subtasks` que recibe título y descripción de una tarea y devuelve 3-5 subtareas propuestas.
 
-## Nombres
-- Componentes React: `[...]`
-- Hooks: `[...]`
-- Servicios y utils: `[...]`
-- Tipos e interfaces: `[...]`
-- Tablas de la base de datos: `[...]`
+## Tooling
+- Linter: ESLint con eslint-config-standard
+- Formatter: Prettier
+- Tests: Vitest (unit), Supertest (integración API), Cypress (E2E)
 
-## Decisiones de arquitectura
-- Backend como monolito o microservicios, y por qué: `[...]`
-- Por qué dos bases de datos (Postgres + Mongo): `[...]`
-- Cómo aislamos el módulo de IA del resto: `[...]`
+## DevOps
+- Contenedores: Docker, con docker-compose para Postgres y MongoDB en local
+- CI/CD: GitHub Actions (lint → test → build → deploy)
+- Deploy: Render o Railway
