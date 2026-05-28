@@ -35,6 +35,8 @@ taskforge/
 - `lint` — ejecuta ESLint en todos los workspaces.
 - `test` — ejecuta Vitest en todos los workspaces.
 
+**REQ-2.3** Cada workspace debe declarar en su propio `package.json` los scripts `lint`, `test` y (cuando aplique) `build`, de modo que los scripts raíz con `pnpm --recursive` tengan algo que ejecutar. Si un workspace no tiene tests aún, su script `test` debe terminar con código de salida 0 (p. ej. `vitest run --passWithNoTests`).
+
 ---
 
 ### 3. TypeScript
@@ -47,7 +49,7 @@ taskforge/
 
 ### 4. Linting y formato
 
-**REQ-4.1** ESLint debe configurarse en la raíz con `eslint-config-standard` y soporte TypeScript, aplicable a todos los workspaces.
+**REQ-4.1** ESLint debe configurarse en la raíz en formato flat config (`eslint.config.js`, ESLint 9+) usando **`neostandard`** (variante de Standard nativa para flat config) con soporte TypeScript, aplicable a todos los workspaces. No se usa `eslint-config-standard` porque solo soporta el formato legacy `.eslintrc`.
 
 **REQ-4.2** Prettier debe configurarse en la raíz (`.prettierrc`) con reglas consistentes para todo el monorepo.
 
@@ -59,9 +61,9 @@ taskforge/
 
 **REQ-5.1** El workspace `apps/web` debe inicializarse con **Vite** y la plantilla `react-ts`.
 
-**REQ-5.2** Las dependencias de producción mínimas son: `react`, `react-dom`, `@mui/material`, `@emotion/react`, `@emotion/styled`.
+**REQ-5.2** Las dependencias de producción mínimas son: `react`, `react-dom`, `@mui/material`, `@emotion/react`, `@emotion/styled`. Las de desarrollo mínimas son: `vite`, `@vitejs/plugin-react`, `typescript` y `@types/react`, `@types/react-dom`.
 
-**REQ-5.3** Debe existir un `vite.config.ts` funcional con alias `@/` apuntando a `src/`.
+**REQ-5.3** Debe existir un `vite.config.ts` funcional (con `@vitejs/plugin-react`) y alias `@/` apuntando a `src/`. El `tsconfig.json` de `apps/web` debe incluir `"jsx": "react-jsx"` para compilar componentes `.tsx`.
 
 ---
 
@@ -71,7 +73,9 @@ taskforge/
 
 **REQ-6.2** Las dependencias de producción mínimas son: `express`, `zod`, `jsonwebtoken`, `@prisma/client`, `mongoose`.
 
-**REQ-6.3** Las dependencias de desarrollo deben incluir: `tsx`, `prisma`, `@types/express`, `@types/jsonwebtoken`.
+**REQ-6.3** Las dependencias de desarrollo deben incluir: `tsx`, `prisma`, `@types/node`, `@types/express`, `@types/jsonwebtoken`.
+
+**REQ-6.6** El `tsconfig.json` de `apps/api` debe sobreescribir `module`/`moduleResolution` a `NodeNext` (no `bundler`, que es para el frontend con Vite) para que el output compilado a `dist/` sea ejecutable directamente por Node.
 
 **REQ-6.4** El script `dev` del workspace debe usar `tsx watch src/index.ts`.
 
@@ -84,6 +88,8 @@ taskforge/
 **REQ-7.1** El workspace `packages/shared` debe exportar tipos TypeScript compartidos (al menos `User`, `Project`, `Task`) desde `src/index.ts`.
 
 **REQ-7.2** Debe compilar a `dist/` y declarar `main` y `types` en su `package.json`.
+
+**REQ-7.3** El `exports` del `package.json` debe incluir una condición `development` (o `source`) que apunte a `src/index.ts`, para que `apps/api` (vía `tsx`) y `apps/web` (vía Vite) puedan importar `@taskforge/shared` en modo dev sin necesidad de haber compilado `dist/` previamente.
 
 ---
 
@@ -126,4 +132,4 @@ taskforge/
 | AC-4 | `pnpm lint` no reporta errores en el código inicial generado. |
 | AC-5 | `pnpm test` pasa (aunque no haya tests, debe terminar sin error). |
 | AC-6 | `docker compose up -d` levanta Postgres y MongoDB sin errores. |
-| AC-7 | `packages/shared` puede importarse desde `apps/api` y `apps/web` usando el nombre de paquete `@taskforge/shared`. |
+| AC-7 | `packages/shared` puede importarse desde `apps/api` y `apps/web` usando el nombre de paquete `@taskforge/shared`. Para ejercitarlo automáticamente, `apps/api/src/index.ts` importa al menos un tipo de `@taskforge/shared` y el `build` lo valida. |

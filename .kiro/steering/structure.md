@@ -1,40 +1,52 @@
-# Stack Tecnológico
+# Estructura del Proyecto
 
-> Este archivo le dice al agente **con qué** vamos a construir TaskForge.
+> Cómo se organiza el monorepo y dónde va cada cosa.
 
-## Monorepo
-- Package manager: pnpm con workspaces
-- Estructura: `apps/` para apps desplegables, `packages/` para librerías compartidas internas.
+## Layout del monorepo
+```
+taskforge/
+├── apps/
+│   ├── web/                # Frontend React + Vite (@taskforge/web)
+│   │   └── src/
+│   │       ├── components/ # Componentes reutilizables (PascalCase.tsx)
+│   │       ├── features/   # Feature-based: projects/, tasks/, auth/
+│   │       ├── hooks/      # Custom hooks (useXxx.ts)
+│   │       ├── lib/        # api client, helpers
+│   │       └── pages/      # Vistas por ruta
+│   └── api/                # Backend Express (@taskforge/api)
+│       └── src/
+│           ├── routes/     # Definición de endpoints por recurso
+│           ├── controllers/# Handlers HTTP
+│           ├── services/   # Lógica de negocio
+│           ├── middleware/ # auth (JWT), validación (Zod), errores
+│           ├── db/         # Prisma client + Mongoose models
+│           └── index.ts    # Bootstrap del servidor
+├── packages/
+│   └── shared/             # Tipos y utils compartidos (@taskforge/shared)
+│       └── src/index.ts    # Exporta User, Project, Task...
+├── .kiro/                  # Steering + specs
+├── docker-compose.yml
+├── pnpm-workspace.yaml
+└── tsconfig.base.json
+```
 
-## Frontend (apps/web)
-- Framework: React 18+ con hooks y componentes funcionales
-- Bundler: Vite
-- Librería de UI: MUI v5+
-- Lenguaje: TypeScript en modo strict
+## Convenciones de nombres
+- Componentes React: `PascalCase.tsx`. Hooks: `useCamelCase.ts`.
+- Backend: archivos `kebab-case.ts`, funciones `camelCase`.
+- Tipos compartidos siempre desde `@taskforge/shared`, nunca duplicar interfaces entre web y api.
 
-## Backend (apps/api)
-- Runtime: Node.js 20+
-- Framework: Express 4+
-- Hot reload en dev: tsx watch
-- Validación de entradas: Zod
-- Autenticación: JWT en header Authorization (Bearer)
+## Reglas de dependencia
+- `apps/web` y `apps/api` pueden importar `packages/shared`.
+- `packages/shared` NO importa de `apps/*` (evita ciclos).
+- La lógica de negocio vive en `services/`; los `controllers/` solo orquestan request/response.
 
-## Bases de datos
-Usamos dos bases de datos a propósito, una relacional y una documental:
+## Capas del backend
+`route → middleware (auth + Zod) → controller → service → db`
 
-- Relacional: PostgreSQL con ORM Prisma (usuarios, proyectos, tareas, subtareas)
-- Documental: MongoDB con ODM Mongoose (comentarios, historial de actividad)
+## Dónde poner cada base de datos
+- Postgres/Prisma: entidades con relaciones (User, Project, Task, Subtask).
+- MongoDB/Mongoose: datos append-only y flexibles (comentarios, activity log).
 
-## Integración con IA
-- Proveedor: Anthropic Claude API
-- Caso de uso: endpoint `POST /api/v1/ai/suggest-subtasks` que recibe título y descripción de una tarea y devuelve 3-5 subtareas propuestas.
-
-## Tooling
-- Linter: ESLint con eslint-config-standard
-- Formatter: Prettier
-- Tests: Vitest (unit), Supertest (integración API), Cypress (E2E)
-
-## DevOps
-- Contenedores: Docker, con docker-compose para Postgres y MongoDB en local
-- CI/CD: GitHub Actions (lint → test → build → deploy)
-- Deploy: Render o Railway
+## Convención de API
+- Prefijo de versión: `/api/v1/...`
+- Recursos en plural: `/projects`, `/tasks`. IA bajo `/ai/suggest-subtasks`.
