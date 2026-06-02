@@ -1,0 +1,18 @@
+# Dependencies
+node_modules
+
+# Build artifacts
+dist
+build
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# pnpm
+.pnpm-store
+
+# Editor
+.DS_Store
+*.log
