@@ -11,6 +11,9 @@ importers:
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
+      eslint:
+        specifier: ^9.5.0
+        version: 9.39.4
       neostandard:
         specifier: ^0.12.1
         version: 0.12.2(@typescript-eslint/utils@8.60.0(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3)

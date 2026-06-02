@@ -1,3 +1,6 @@
 import neostandard from 'neostandard'
 
-export default neostandard({ ts: true })
+export default [
+  { ignores: ['**/dist/**', '**/build/**', '**/node_modules/**'] },
+  ...neostandard({ ts: true }),
+]
