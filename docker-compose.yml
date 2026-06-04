@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-taskforge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-taskforge}
+      POSTGRES_DB: ${POSTGRES_DB:-taskforge}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-taskforge}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-taskforge}
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  pg_data:
+  mongo_data:
