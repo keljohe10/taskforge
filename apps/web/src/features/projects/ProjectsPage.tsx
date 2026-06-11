@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { T } from '../../theme/tokens'
 import { I } from '../../icons'
-import { ViewToggle } from '../../components'
-import type { ProjectsView } from '../../components'
+import { ViewToggle, CreateProjectDialog } from '../../components'
+import type { ProjectsView, CreateProjectFormData } from '../../components'
 import { TopBar } from '../../layout/TopBar'
 import { useLayout } from '../../hooks/useLayout'
 import { ProjectsEmptyState } from './ProjectsEmptyState'
@@ -13,6 +13,12 @@ import { ProjectsEmptyState } from './ProjectsEmptyState'
 export function ProjectsPage () {
   const { openMobileNav } = useLayout()
   const [view, setView] = useState<ProjectsView>('grid')
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  function handleCreate (data: CreateProjectFormData) {
+    // TODO: enviar al backend cuando exista el endpoint
+    console.log('Crear proyecto:', data)
+  }
 
   const actions = (
     <>
@@ -23,7 +29,7 @@ export function ProjectsPage () {
       >
         <Box component='span' sx={{ display: { xs: 'none', sm: 'inline' } }}>Filtros</Box>
       </Button>
-      <Button variant='contained' startIcon={<I.Plus size={14} />}>
+      <Button variant='contained' startIcon={<I.Plus size={14} />} onClick={() => setDialogOpen(true)}>
         <Box component='span' sx={{ display: { xs: 'none', sm: 'inline' } }}>Nuevo proyecto</Box>
         <Box component='span' sx={{ display: { xs: 'inline', sm: 'none' } }}>Nuevo</Box>
       </Button>
@@ -56,8 +62,14 @@ export function ProjectsPage () {
           <ViewToggle value={view} onChange={setView} />
         </Box>
 
-        <ProjectsEmptyState />
+        <ProjectsEmptyState onCreate={() => setDialogOpen(true)} />
       </Box>
+
+      <CreateProjectDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSubmit={handleCreate}
+      />
     </>
   )
 }

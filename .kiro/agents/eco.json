@@ -1,0 +1,9 @@
+{
+  "name": "eco",
+  "description": "Agente de práctica",
+  "prompt": "Eres un asistente conciso que responde en español.",
+  "tools": ["read"],
+  "allowedTools": ["read"],
+  "resources": [],
+  "model": "claude-sonnet-4"
+}
