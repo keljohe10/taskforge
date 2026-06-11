@@ -105,3 +105,22 @@ export const navCounts = {
   projects: sidebarProjects.length,
   tasks: 12,
 }
+
+// Miembros disponibles para invitar al crear un proyecto.
+export type TeamMember = { id: string; name: string }
+
+export const teamMembers: TeamMember[] = [
+  { id: 'u-1', name: 'Lucía Pérez' },
+  { id: 'u-2', name: 'Mateo Ruiz' },
+  { id: 'u-3', name: 'Sofía Díaz' },
+  { id: 'u-4', name: 'Andrés Gil' },
+]
+
+// Plantillas predefinidas para nuevos proyectos.
+export type ProjectTemplate = { value: string; label: string; hint: string }
+
+export const projectTemplates: ProjectTemplate[] = [
+  { value: 'kanban', label: 'Tablero Kanban', hint: 'Pendiente · En progreso · Hecha' },
+  { value: 'scrum',  label: 'Scrum Sprint',   hint: 'Backlog · En curso · Revisión · Hecha' },
+  { value: 'blank',  label: 'En blanco',       hint: 'Sin columnas predefinidas' },
+]
