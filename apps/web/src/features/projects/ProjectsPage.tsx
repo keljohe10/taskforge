@@ -7,12 +7,14 @@ import type { ProjectsView } from '../../components'
 import { TopBar } from '../../layout/TopBar'
 import { useLayout } from '../../hooks/useLayout'
 import { ProjectsEmptyState } from './ProjectsEmptyState'
+import { CreateProjectDialog } from './CreateProjectDialog'
 
 // Página de Proyectos: chrome completo (top bar + cabecera + toggle) y estado vacío.
 // Las cards aún no se implementan: el cuerpo muestra un placeholder.
 export function ProjectsPage () {
   const { openMobileNav } = useLayout()
   const [view, setView] = useState<ProjectsView>('grid')
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   const actions = (
     <>
@@ -23,7 +25,7 @@ export function ProjectsPage () {
       >
         <Box component='span' sx={{ display: { xs: 'none', sm: 'inline' } }}>Filtros</Box>
       </Button>
-      <Button variant='contained' startIcon={<I.Plus size={14} />}>
+      <Button variant='contained' startIcon={<I.Plus size={14} />} onClick={() => setDialogOpen(true)}>
         <Box component='span' sx={{ display: { xs: 'none', sm: 'inline' } }}>Nuevo proyecto</Box>
         <Box component='span' sx={{ display: { xs: 'inline', sm: 'none' } }}>Nuevo</Box>
       </Button>
@@ -56,8 +58,10 @@ export function ProjectsPage () {
           <ViewToggle value={view} onChange={setView} />
         </Box>
 
-        <ProjectsEmptyState />
+        <ProjectsEmptyState onCreate={() => setDialogOpen(true)} />
       </Box>
+
+      <CreateProjectDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </>
   )
 }
